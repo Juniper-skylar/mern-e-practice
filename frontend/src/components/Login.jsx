@@ -1,8 +1,10 @@
 import { useState } from "react"
 import {signin} from '../api/api'
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function Login() {
+
+    const navigate = useNavigate();
 
     const [data, setData] = useState({
         email:'',
@@ -21,9 +23,22 @@ function Login() {
 
         try{
 
-            await signin(data);
+            const response = await signin(data);
 
             console.log("user logged in successfully");
+
+            localStorage.setItem('token', response.token);
+            localStorage.setItem('role', response.role);
+
+            localStorage.setItem('userdata', JSON.stringify(response.data));
+
+            if(response.data.role === 'adminUser'){
+                navigate('/admin-dashboard');
+            }
+
+            else{
+                navigate('/user-dashboard');
+            }
 
             setData({
                 email:'',
@@ -31,7 +46,7 @@ function Login() {
             });
 
         } catch(error){
-            console.error("error while logging in user", error);
+            console.log("error while logging in user", error);
         }
     }
 

@@ -9,17 +9,19 @@ const Api = axios.create({
 
 export const save = async(data) => {
     try{
-        await Api.post('/signup', data);
+       const response = await Api.post('/signup', data);
+       return response.data;
     } catch(error) {
-        console.error("error while saving...", error);
+        return error.response?.data?.message || "error while saving new user";
     }
 }
 
 export const signin = async(data) => {
     try{
-        await Api.post('/login', data);
+        const response = await Api.post('/login', data);
+        return response.data;
     } catch(error) {
-        console.error("error while logging in...", error);
+        return error.response?.data?.message || "error while logging in user";
     }
 }
 

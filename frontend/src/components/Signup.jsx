@@ -7,7 +7,8 @@ function Signup() {
     const [data, setData] = useState({
         username:'',
         email:'',
-        password:''
+        password:'',
+        role:''
     });
 
     const handleChange = (e) => {
@@ -24,15 +25,17 @@ function Signup() {
 
             await save(data);
 
-            console.log("user registered successfully");
+            alert("user registered successfully");
 
             setData({
                 username:'',
                 email:'',
-                password:''
+                password:'',
+                role:''
             });
 
         } catch(error){
+            alert("error while saving new user");
             console.error("error while saving new user", error);
         }
     }
@@ -63,6 +66,12 @@ return(
              value={data.password}
              onChange={handleChange}
              />
+
+             <select name="role" onChange={handleChange} value={data.role}>
+                <option value="">select role</option>
+                <option value="regularUser">regular user</option>
+                <option value="adminUser">admin user</option>
+             </select>
 
             <button type="submit">Signup</button>
                 <p>Already have An account? please </p>

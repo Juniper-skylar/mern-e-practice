@@ -6,7 +6,7 @@ const signup = async (req, res) => {
     try {
         const { username, email, password, role } = req.body;
 
-        if(!username || !password){
+        if(!username || !password || !email || !role){
             return res.status(400).json({message:"all fields are required"});
         }
 
@@ -57,7 +57,15 @@ const login = async(req, res) => {
         const token = await jwt.sign({ "user id": checkEmail._id }, process.env.JWT_SECRET, {"expiresIn": "1d"});
 
         if(token){
-            return res.status(200).json({ message: "user login successful", token});
+            return res.status(200).json({ message: "user login successful",
+                 token,
+                 data:{
+                    id:checkEmail._id,
+                    username:checkEmail.username,
+                    email:checkEmail.email,
+                    role:checkEmail.role
+                 }
+                 });
         }
     } catch (error) {
         console.error("error while logging in", error);
