@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const serviceRecord = require('./serviceRecord');
 
 const paymentSchema = new mongoose.Schema({
     paymentNumber:{

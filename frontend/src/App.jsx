@@ -1,8 +1,12 @@
+import {BrowserRouter as Router, Routes, Route} from 'react-router-dom';
+
 import Signup from "./components/Signup";
 import Login from "./components/Login";
 import AdminDashboard from "./components/AdminDashboard";
 import UserDashboard from "./components/UserDashboard";
-import {BrowserRouter as Router, Routes, Route} from 'react-router-dom';
+import CarRegistration from './components/CarRegistration';
+import ServiceRegistration from './components/ServiceRegistration';
+import ServiceRecordRegistration from './components/ServiceRecordRegistration';
 
 function App() {
   return (
@@ -13,6 +17,9 @@ function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/admin-dashboard" element={<AdminDashboard />} />
           <Route path="/user-dashboard" element={<UserDashboard />} />
+          <Route path="/save-car" element={<CarRegistration />} />
+          <Route path="/save-service" element={<ServiceRegistration />} />
+          <Route path="/save-service-record" element={<ServiceRecordRegistration />} />
         </Routes>
       </div>
     </Router>

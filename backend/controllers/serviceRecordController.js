@@ -51,7 +51,7 @@ const updateServiceRecordById = async(req, res) => {
 
 const deleteServiceRecordById = async(req, res) => {
     try {
-        const deleteServiceRecord = await serviceRecord.findByIdAndDelete(req.params.id);
+        const deleteServiceRecord = await serviceRecord.findByIdAndDelete(req.params.Id);
        
         return res.status(200).json({ success: true, message: "service record deleted"});
     } catch (error) {

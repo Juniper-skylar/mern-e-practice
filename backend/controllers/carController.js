@@ -11,4 +11,15 @@ const registerCar = async (req,res) =>{
      }
 }
 
-module.exports = registerCar;
+const getAllCars = async (req,res) =>{
+
+     try {
+        const cars = await car.find();
+        return res.status(200).json({ message:"data retrieved" ,cars});
+
+    } catch (error) {
+        console.log("error while inserting car", error);
+     }
+}
+
+module.exports = {registerCar, getAllCars};

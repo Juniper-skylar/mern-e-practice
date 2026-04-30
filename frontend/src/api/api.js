@@ -1,7 +1,7 @@
 import axios from "axios"
 
 const Api = axios.create({
-    baseURL: "http://localhost:2000/api/auth",
+    baseURL: "http://localhost:2000/api",
     headers: {
         "Content-Type": "application/json"
     }
@@ -9,7 +9,7 @@ const Api = axios.create({
 
 export const save = async(data) => {
     try{
-       const response = await Api.post('/signup', data);
+       const response = await Api.post('/auth/signup', data);
        return response.data;
     } catch(error) {
         return error.response?.data?.message || "error while saving new user";
@@ -18,10 +18,60 @@ export const save = async(data) => {
 
 export const signin = async(data) => {
     try{
-        const response = await Api.post('/login', data);
+        const response = await Api.post('/auth/login', data);
         return response.data;
     } catch(error) {
         return error.response?.data?.message || "error while logging in user";
     }
 }
+
+export const saveCar = async(data) => {
+    try {
+        const response = await Api.post('/car/register-car', data);
+        return response.data;
+    } catch (error) {
+        return error.response?.data?.message || "error while saving car";
+    }
+}
+
+export const saveService = async(data) => {
+    try {
+        const response = await Api.post('/service/register-service', data);
+        return response.data;
+    } catch (error) {
+        return error.response?.data?.message || "error while saving service";
+    }
+}
+
+export const saveServiceRecord = async(data) => {
+    try {
+        const response = await Api.post('/servicerecord/insertservicerecord', data);
+        return response.data;
+    } catch (error) {
+        return error.response?.data?.message || "error while saving service record";
+    }
+}
+
+
+// not used yet in admin db
+export const getAllCars = async() => {
+    try {
+        const response = await Api.get('/car/getAllCars');
+        return response.data;
+    } catch (error) {
+        return error.response?.data?.message || "error while fetching cars";
+    }
+}
+
+
+// not used yet in retreving in admin dashboard
+export const getAllServices = async() => {
+    try {
+        const response = await Api.get('/service/getAllServices');
+        return response.data;
+    } catch (error) {
+        return error.response?.data?.message || "error while fetching services";
+    }
+}
+
 

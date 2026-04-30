@@ -21,6 +21,7 @@ connectDB();
 
 app.use(cors());
 
+
 app.use('/api/auth', authRouter);
 app.use('/api/car', carRouter);
 app.use('/api/service',serviceRouter);

@@ -9,4 +9,13 @@ const insertService = async(req,res) =>{
     }
 }
 
-module.exports = insertService;
+const getAllServices = async(req,res) =>{
+    try {
+        const get_services = await service.find();
+        return res.status(200).json({message:"services are retrieved",get_services})
+    } catch (error) {
+        console.log("error while retrieving services", error);
+    }
+}
+
+module.exports = {insertService, getAllServices};

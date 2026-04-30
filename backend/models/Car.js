@@ -4,7 +4,7 @@ const carSchema = new mongoose.Schema ({
     plateNumber:{
         type:String,
         required:true,
-        unique:true
+        trim: true
     },
     type:{
         type:String,
