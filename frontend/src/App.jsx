@@ -9,6 +9,8 @@ import ServiceRegistration from './components/ServiceRegistration';
 import ServiceRecordRegistration from './components/ServiceRecordRegistration';
 import ManageServiceRecord from './components/ManageServiceRecord';
 
+import Layout from "./components/Layout";
+
 function App() {
   return (
     <Router>

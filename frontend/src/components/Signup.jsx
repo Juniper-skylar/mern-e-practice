@@ -40,44 +40,83 @@ function Signup() {
         }
     }
 
-return(
-    <>
-        <form onSubmit={handleSubmit}>
-            <input
-             type="text"
-             name="username"
-             placeholder="enter username"
-             value={data.username}
-             onChange={handleChange}
-             />
+return (
+  <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 px-4">
+    
+    <div className="w-full max-w-md bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl rounded-2xl p-8">
+      
+      {/* Title */}
+      <h2 className="text-3xl font-bold text-white text-center mb-2">
+        Create Account
+      </h2>
+      <p className="text-gray-300 text-center mb-6 text-sm">
+        Sign up to get started
+      </p>
 
-            <input
-             type="email"
-             name="email"
-             placeholder="enter email"
-             value={data.email}
-             onChange={handleChange}
-             />
+      <form onSubmit={handleSubmit} className="space-y-4">
 
-             <input
-             type="password"
-             name="password"
-             placeholder="enter password"
-             value={data.password}
-             onChange={handleChange}
-             />
+        {/* Username */}
+        <input
+          type="text"
+          name="username"
+          placeholder="Username"
+          value={data.username}
+          onChange={handleChange}
+          className="w-full px-4 py-3 rounded-xl bg-white/10 text-white placeholder-gray-300 border border-white/20 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        />
 
-             <select name="role" onChange={handleChange} value={data.role}>
-                <option value="">select role</option>
-                <option value="regularUser">regular user</option>
-                <option value="adminUser">admin user</option>
-             </select>
+        {/* Email */}
+        <input
+          type="email"
+          name="email"
+          placeholder="Email address"
+          value={data.email}
+          onChange={handleChange}
+          className="w-full px-4 py-3 rounded-xl bg-white/10 text-white placeholder-gray-300 border border-white/20 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        />
 
-            <button type="submit">Signup</button>
-                <p>Already have An account? please </p>
-                <Link to="/">Login</Link>
-        </form>
-    </>
+        {/* Password */}
+        <input
+          type="password"
+          name="password"
+          placeholder="Password"
+          value={data.password}
+          onChange={handleChange}
+          className="w-full px-4 py-3 rounded-xl bg-white/10 text-white placeholder-gray-300 border border-white/20 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        />
+
+        {/* Role */}
+        <select
+          name="role"
+          value={data.role}
+          onChange={handleChange}
+          className="w-full px-4 py-3 rounded-xl bg-white/10 text-white border border-white/20 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        >
+          <option value="">Select role</option>
+          <option value="regularUser">Regular User</option>
+          <option value="adminUser">Admin User</option>
+        </select>
+
+        {/* Button */}
+        <button
+          type="submit"
+          className="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold transition duration-300 shadow-lg hover:shadow-indigo-500/30"
+        >
+          Sign Up
+        </button>
+
+      </form>
+
+      {/* Footer */}
+      <p className="text-gray-300 text-sm text-center mt-6">
+        Already have an account?{" "}
+        <Link to="/" className="text-indigo-400 hover:underline">
+          Login
+        </Link>
+      </p>
+
+    </div>
+  </div>
 );
 
 }

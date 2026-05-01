@@ -89,62 +89,144 @@ export default function ManageServiceRecord() {
             return <p>Loading...</p>;
         }
 
-        return (
-            <>
+      return (
+  <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 p-6 text-white">
 
-            {editingRecord && (
-                <div>
-                    <h3>Edit service record</h3>
+    {/* Header */}
+    <div className="flex items-center justify-between mb-6">
+      <h2 className="text-3xl font-bold">Service Records</h2>
+      <span className="text-gray-400 text-sm">
+        Manage all service records
+      </span>
+    </div>
 
-                    <input type="text"
-                     name="recordNumber"
-                     value={editFormData.recordNumber}
-                     onChange={(e)=> setEditFormData({...editFormData, recordNumber:e.target.value})}
-                     />
+    {/* Loading */}
+    {loading && (
+      <div className="text-center text-gray-300">Loading records...</div>
+    )}
 
-                      <input type="date"
-                     name="serviceDate"
-                     value={editFormData.serviceDate}
-                     onChange={(e)=> setEditFormData({...editFormData, serviceDate:e.target.value})}
-                     />
-                    <button onClick={handleUpdate}>Update</button>
+    {/* Error */}
+    {errors && (
+      <div className="bg-red-500/20 border border-red-500 text-red-300 p-3 rounded-lg mb-4">
+        {errors}
+      </div>
+    )}
 
-                </div>
-            )}
-            
-            <h2>Manage Service Records</h2>
+    {/* Table Card */}
+    <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl overflow-hidden shadow-xl">
 
-            <table border={1}>
-                <thead>
-                <tr>
-                    <th>#</th>
-                    <th>recordNumber</th>
-                    <th>car</th>
-                    <th>service</th>
-                    <th>service date</th>
-                    <th>Actions</th>
-                </tr>
-                </thead>
+      <table className="w-full text-left">
+        <thead className="bg-white/10 text-gray-300 text-sm uppercase">
+          <tr>
+            <th className="p-4">#</th>
+            <th className="p-4">Record</th>
+            <th className="p-4">Car</th>
+            <th className="p-4">Service</th>
+            <th className="p-4">Date</th>
+            <th className="p-4">Actions</th>
+          </tr>
+        </thead>
 
-                <tbody>
+        <tbody>
+          {serviceRecord.map((srecords, index) => (
+            <tr
+              key={srecords._id}
+              className="border-t border-white/10 hover:bg-white/10 transition"
+            >
+              <td className="p-4">{index + 1}</td>
+              <td className="p-4 font-medium">{srecords.recordNumber}</td>
+              <td className="p-4 text-gray-300">
+                {srecords.car?.plateNumber}
+              </td>
+              <td className="p-4 text-gray-300">
+                {srecords.service?.serviceName}
+              </td>
+              <td className="p-4 text-gray-300">
+                {new Date(srecords.serviceDate).toLocaleDateString()}
+              </td>
 
-                    {serviceRecord.map((srecords, index)=> (
-                        <tr key={srecords._id}>
-                            <td>{index + 1}</td>
-                            <td>{srecords.recordNumber}</td>
-                            <td>{srecords.car?.plateNumber}</td>
-                            <td>{srecords.service?.serviceName}</td>
-                            <td>{new Date(srecords.serviceDate).toLocaleDateString()}</td>
-                            <td>
-                                <button onClick={() => handleEditFormChange(srecords)}>Edit</button>
-                                <button onClick={() => handleDelete(srecords._id)}>Delete</button>
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
+              <td className="p-4 flex gap-2">
+                <button
+                  onClick={() => handleEditFormChange(srecords)}
+                  className="px-3 py-1 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-sm transition"
+                >
+                  Edit
+                </button>
 
-            </>
-        )
+                <button
+                  onClick={() => handleDelete(srecords._id)}
+                  className="px-3 py-1 rounded-lg bg-red-600 hover:bg-red-700 text-sm transition"
+                >
+                  Delete
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+
+    {/* MODERN EDIT MODAL */}
+    {editingRecord && (
+      <div className="fixed inset-0 bg-black/70 flex items-center justify-center p-4">
+
+        <div className="w-full max-w-md bg-gray-900 border border-white/20 rounded-2xl p-6 shadow-2xl">
+
+          <h3 className="text-xl font-bold mb-4">Edit Service Record</h3>
+
+          <div className="space-y-3">
+
+            <input
+              type="text"
+              value={editFormData.recordNumber}
+              onChange={(e) =>
+                setEditFormData({
+                  ...editFormData,
+                  recordNumber: e.target.value,
+                })
+              }
+              className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 focus:ring-2 focus:ring-indigo-500 outline-none"
+              placeholder="Record Number"
+            />
+
+            <input
+              type="date"
+              value={editFormData.serviceDate}
+              onChange={(e) =>
+                setEditFormData({
+                  ...editFormData,
+                  serviceDate: e.target.value,
+                })
+              }
+              className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 focus:ring-2 focus:ring-indigo-500 outline-none"
+            />
+
+          </div>
+
+          {/* Buttons */}
+          <div className="flex justify-end gap-3 mt-5">
+
+            <button
+              onClick={() => setEditingRecord(null)}
+              className="px-4 py-2 rounded-lg bg-gray-600 hover:bg-gray-700 transition"
+            >
+              Cancel
+            </button>
+
+            <button
+              onClick={handleUpdate}
+              className="px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 transition"
+            >
+              Update
+            </button>
+
+          </div>
+
+        </div>
+      </div>
+    )}
+
+  </div>
+);
 
     }
