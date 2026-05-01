@@ -1,83 +1,173 @@
-const payment = require('../models/Payment');
+const Payment = require('../models/Payment');
 const mongoose = require('mongoose');
 
-const createPayment = async(req,res) =>{
+const createPayment = async (req, res) => {
     try {
-        const pay = await payment.create(req.body);
-        return res.status(201).json({ message: "payment created successfully", payment});
+        const payment = await Payment.create(req.body);
+
+        return res.status(201).json({
+            message: "payment created successfully",
+            payment
+        });
+
     } catch (error) {
-        console.log("error while creating payment", error);
-        
+        console.log("error while creating payment:", error);
+        res.status(500).json({ error: error.message });
     }
+};
+
+const generateBill = async (req, res) => {
+  try {
+    const { paymentId } = req.params;
+
+    // check if paymentId is a valid ObjectId before querying
+    const test = await Payment.findById(paymentId);
+console.log("Direct find:", test);
+
+    //check if paymentId is a valid ObjectId before aggregation
+    if (!mongoose.Types.ObjectId.isValid(paymentId)) {
+  return res.status(400).json({
+    success: false,
+    message: "Invalid payment ID"
+  });
 }
 
-const generateBill = async(req, res) => {
-    try {
-        
-        const { paymentId } = req.params;
+    const bill = await Payment.aggregate([
+      {
+  $match: {
+    _id: mongoose.Types.ObjectId.isValid(paymentId)
+      ? new mongoose.Types.ObjectId(paymentId.trim())
+      : null
+  }
+},
 
-        const bill = await Payment.aggregate([
-            {
-                $match: {
-                    _id: new mongoose.Types.ObjectId(paymentId)
-                }
-            },
+      // ServiceRecord
+      {
+        $lookup: {
+          from: "servicerecords",
+          localField: "serviceRecord",
+          foreignField: "_id",
+          as: "record"
+        }
+      },
+      {
+        $unwind: {
+          path: "$record",
+          preserveNullAndEmptyArrays: true // 🛡️ prevents crash
+        }
+      },
 
-            //Join service record
+      // Car
+      {
+        $lookup: {
+          from: "cars",
+          localField: "record.car",
+          foreignField: "_id",
+          as: "car"
+        }
+      },
+      {
+        $unwind: {
+          path: "$car",
+          preserveNullAndEmptyArrays: true
+        }
+      },
 
-            {
-                $lookup:{
-                    from: 'servicerecords',
-                    localField:'serviceRecord',
-                    foreignField:'_id',
-                    as:'record'
-                }
-            },
-            { $unwind: "$record" },
+      // Service
+      {
+        $lookup: {
+          from: "services",
+          localField: "record.service",
+          foreignField: "_id",
+          as: "service"
+        }
+      },
+      {
+        $unwind: {
+          path: "$service",
+          preserveNullAndEmptyArrays: true
+        }
+      },
 
-            {
-                $lookup: {
-                    from:'cars',
-                    localField: 'record.car',
-                    foreignField: '_id',
-                    as: 'car'
-                }
-            },
-
-            { $unwind: '$car'},
-
-            {
-                $lookup: {
-                    from: 'services',
-                    localField: 'record.service',
-                    foreignField: '_id',
-                    as: 'service'
-                }
-            },
-
-            { $unwind: '$service' },
-
-            {
-                $project: {
-                    paymentNumber:1,
-                    plateNumber: '$car.plateNumber',
-                    model: '$car.model',
-                    serviceName: '$service.serviceName',
-                    servicePrice: '$service.serviePrice',
-                    amountPaid: 1,
-                    paymentDate: 1,   
-                    balance: { $subtract: ['$service.servicePrice', '$amountPaid'] }
-                }
+      // 🛡️ SAFE NUMBER CONVERSION
+      {
+        $addFields: {
+          cleanServicePrice: {
+            $toDouble: {
+              $replaceAll: {
+                input: { $toString: { $ifNull: ["$service.servicePrice", "0"] } },
+                find: ",",
+                replacement: ""
+              }
             }
-        ])
+          },
+          cleanAmountPaid: {
+            $toDouble: {
+              $replaceAll: {
+                input: { $toString: { $ifNull: ["$amountPaid", "0"] } },
+                find: ",",
+                replacement: ""
+              }
+            }
+          }
+        }
+      },
 
-        res.json(bill[0]);
+      // FINAL RESULT
+      {
+        $project: {
+          paymentNumber: 1,
+          plateNumber: "$car.plateNumber",
+          model: "$car.model",
+          serviceName: "$service.serviceName",
 
-    } catch (error) {
-        return res.status(500).json({ message: "error while generating bill", error});
-        
+          servicePrice: "$cleanServicePrice",
+          amountPaid: "$cleanAmountPaid",
+          paymentDate: 1,
+
+          balance: {
+            $cond: [
+              { $gt: ["$cleanServicePrice", "$cleanAmountPaid"] },
+              { $subtract: ["$cleanServicePrice", "$cleanAmountPaid"] },
+              0
+            ]
+          },
+
+          change: {
+            $cond: [
+              { $gt: ["$cleanAmountPaid", "$cleanServicePrice"] },
+              { $subtract: ["$cleanAmountPaid", "$cleanServicePrice"] },
+              0
+            ]
+          }
+        }
+      }
+    ]);
+
+    console.log("RAW paymentId:", paymentId);
+    console.log("Is valid ObjectId:", mongoose.Types.ObjectId.isValid(paymentId));
+
+    // 🛡️ EVEN IF DATA IS BROKEN, WE STILL RETURN SOMETHING
+    if (!bill.length) {
+      return res.status(404).json({
+        success: false,
+        message: "Bill not found (data may be disconnected)"
+      });
     }
-}
 
+    return res.status(200).json({
+      success: true,
+      bill: bill[0]
+    });
+
+  } catch (error) {
+    console.log("error while generating bill", error);
+
+    return res.status(500).json({
+      message: "error while generating bill",
+      error: error.message
+    });
+  }
+};
 
 module.exports = {createPayment, generateBill};

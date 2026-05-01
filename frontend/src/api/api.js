@@ -74,4 +74,20 @@ export const getAllServices = async() => {
     }
 }
 
+export const getAllServiceRecords = async() => {
+    try {
+        const response = await Api.get('/servicerecord/getservicerecords');
+        return response?.data?.getServiceRecords;
+    } catch (error) {
+        return error.response?.data?.message || "error while fetching service records";
+    }
+}
 
+export const deleteServiceRecordById = async (id) => {
+    try {
+        await Api.delete(`/servicerecord/deleteservicerecordbyid/${id}`);
+        return "Service record deleted successfully";
+    } catch (error) {
+        return error.response?.data?.message || "Error while deleting service record";
+    }
+};

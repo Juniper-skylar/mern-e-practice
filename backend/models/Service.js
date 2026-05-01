@@ -10,7 +10,7 @@ const serviceSchema = new mongoose.Schema({
         required:true
     },
     servicePrice:{
-        type:String,
+        type:Number,
         required:true
     }
 }, {timestamps:true});

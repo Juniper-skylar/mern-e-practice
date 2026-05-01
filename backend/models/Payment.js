@@ -3,10 +3,9 @@ const mongoose = require('mongoose');
 const paymentSchema = new mongoose.Schema({
     paymentNumber:{
         type:String,
-        required:true,
-        unique:true
+        required:true
     },
-    serviceRecord:{
+    serviceRecord:{ 
         type:mongoose.Schema.Types.ObjectId,
         ref:"serviceRecord"
     },

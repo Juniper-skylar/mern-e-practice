@@ -9,7 +9,7 @@ const {
      } = require('../controllers/serviceRecordController');
 
 router.post('/insertservicerecord', insertServiceRecord);
-router.get('/getservicerecord', getServiceRecord);
+router.get('/getservicerecords', getServiceRecord);
 router.get('/getservicerecordbyid/:id', getServiceRecordById);
 router.put('/updateservicerecordbyid/:id', updateServiceRecordById);
 router.delete('/deleteservicerecordbyid/:id', deleteServiceRecordById);
