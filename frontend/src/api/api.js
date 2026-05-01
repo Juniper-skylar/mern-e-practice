@@ -91,3 +91,12 @@ export const deleteServiceRecordById = async (id) => {
         return error.response?.data?.message || "Error while deleting service record";
     }
 };
+
+export const updateServiceRecordById = async (id, data) => {
+    try{
+      const response = await Api.put(`/servicerecord/updateservicerecordbyid/${id}`, data);
+      return response.data;
+    } catch(error) {
+        return error.response?.data?.message || "Error while updating service record";
+    }
+}
